@@ -361,7 +361,8 @@ and then use ``EvalNoMethods`` instead of the ``SimpleEval`` class.
 Other...
 --------
 
-The library supports both python 2 and 3.
+The library expects python 3. For python 2 support, please use verion `0.9.10`
+[or another prior release](https://pypi.org/project/simpleeval/#history).
 
 Object attributes that start with ``_`` or ``func_`` are disallowed by default.
 If you really need that (BE CAREFUL!), then modify the module global
