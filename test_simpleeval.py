@@ -873,20 +873,23 @@ class TestMethodChaining(unittest.TestCase):
         """
             Contributed by Khalid Grandi (xaled).
         """
+
+
         class A(object):
             def __init__(self):
                 self.a = "0"
 
             def add(self, b):
-                self.a += "-add" + str(b)
+                self.a += f"-add{str(b)}"
                 return self
 
             def sub(self, b):
-                self.a += "-sub" + str(b)
+                self.a += f"-sub{str(b)}"
                 return self
 
             def tostring(self):
                 return str(self.a)
+
 
         x = A()
         self.assertEqual(simple_eval("x.add(1).sub(2).sub(3).tostring()", names={"x": x}), "0-add1-sub2-sub3")
@@ -966,17 +969,23 @@ class TestUnusualComparisons(DRYTest):
             when asking for comparisons between things.  These BinaryExpressions
             raise a TypeError if you try and check for Truthyiness.
         """
+
+
         class BinaryExpression(object):
             def __init__(self, value):
                 self.value = value
+
             def __eq__(self, other):
                 return self.value == getattr(other, 'value', other)
+
             def __repr__(self):
-                return '<BinaryExpression:{}>'.format(self.value)
+                return f'<BinaryExpression:{self.value}>'
+
             def __bool__(self):
                 # This is the only important part, to match SqlAlchemy - the rest
                 # of the methods are just to make testing a bit easier...
                 raise TypeError("Boolean value of this clause is not defined")
+
 
         class Blah(object):
             def __gt__(self, other):

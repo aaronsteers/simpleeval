@@ -227,13 +227,16 @@ def safe_mult(a, b):  # pylint: disable=invalid-name
     return a * b
 
 
-def safe_add(a, b):  # pylint: disable=invalid-name
+def safe_add(a, b):    # pylint: disable=invalid-name
     """ iterable length limit again """
 
-    if hasattr(a, '__len__') and hasattr(b, '__len__'):
-        if len(a) + len(b) > MAX_STRING_LENGTH:
-            raise IterableTooLong("Sorry, adding those two together would"
-                                  " make something too long.")
+    if (
+        hasattr(a, '__len__')
+        and hasattr(b, '__len__')
+        and len(a) + len(b) > MAX_STRING_LENGTH
+    ):
+        raise IterableTooLong("Sorry, adding those two together would"
+                              " make something too long.")
     return a + b
 
 
@@ -337,7 +340,7 @@ class SimpleEval(object):  # pylint: disable=too-few-public-methods
 
         for f in self.functions.values():
             if f in DISALLOW_FUNCTIONS:
-                raise FeatureNotAvailable('This function {} is a really bad idea.'.format(f))
+                raise FeatureNotAvailable(f'This function {f} is a really bad idea.')
 
     def eval(self, expr, mode="exec"):
         """ evaluate an expresssion, using the operators, functions and
@@ -371,16 +374,23 @@ class SimpleEval(object):  # pylint: disable=too-few-public-methods
         return self._eval(node.value)
 
     def _eval_assign(self, node):
-        warnings.warn("Assignment ({}) attempted, but this is ignored".format(self.expr), AssignmentAttempted)
+        warnings.warn(
+            f"Assignment ({self.expr}) attempted, but this is ignored",
+            AssignmentAttempted,
+        )
+
         return self._eval(node.value)
 
     def _eval_aug_assign(self, node):
-        warnings.warn("Assignment ({}) attempted, but this is ignored".format(self.expr), AssignmentAttempted)
+        warnings.warn(
+            f"Assignment ({self.expr}) attempted, but this is ignored",
+            AssignmentAttempted,
+        )
+
         return self._eval(node.value)
 
     def _eval_import(self, node):
         raise FeatureNotAvailable("Sorry, 'import' is not allowed.")
-        return self._eval(node.value)
 
     @staticmethod
     def _eval_num(node):
@@ -629,10 +639,10 @@ class EvalWithCompoundTypes(SimpleEval):
         return tuple(self._eval(x) for x in node.elts)
 
     def _eval_list(self, node):
-        return list(self._eval(x) for x in node.elts)
+        return [self._eval(x) for x in node.elts]
 
     def _eval_set(self, node):
-        return set(self._eval(x) for x in node.elts)
+        return {self._eval(x) for x in node.elts}
 
     def _eval_comprehension(self, node):
         to_return = []
